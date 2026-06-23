@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from data.fetch_data import fetch_prices
+from data.preprocessing_data import get_user_portfolio, compute_log_returns
 
-tickers = [t.strip().upper() for t in input("Enter tickers: ").split(",")]
-prices = print(fetch_prices(tickers))
+ticker, price, weights = get_user_portfolio()      
+
+# convert prices to log returns
+log_returns = compute_log_returns(price)
+#print(log_returns)
