@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from data.preprocessing_data import get_user_portfolio, compute_log_returns
-from risk.metrics import compute_annualized_volatility
+from risk.metrics import compute_annualized_volatility, compute_annualized_covariance
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -14,4 +14,9 @@ log_returns = compute_log_returns(price)
 annual_vol = compute_annualized_volatility(log_returns)
 print("Annual Volatility:")
 print((annual_vol * 100).apply(lambda x: f"{x:.2f}%"))
+print('')
+
+# calculate annualized covariance matrix
+annual_cov_matrix = compute_annualized_covariance(log_returns)
+print("Annual Covariance Matrix \n", annual_cov_matrix)
 print('')
