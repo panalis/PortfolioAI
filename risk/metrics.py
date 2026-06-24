@@ -24,3 +24,16 @@ def compute_annualized_covariance(returns):
     annual_cov_matrix = daily_cov_matrix * 252
 
     return annual_cov_matrix
+
+def compute_portfolio_volatility(weights, cov_matrix):
+
+    if weights is None or len(weights) == 0:
+        raise ValueError("Weights Error Missing")
+    if cov_matrix is None or cov_matrix.empty:
+        raise ValueError("Covariance Matrix Error Missing")
+
+    weights = np.array(weights)
+    variance = weights.T @ cov_matrix @ weights  # or do np.dot()
+    portfolio_volatility = np.sqrt(variance)
+
+    return portfolio_volatility
