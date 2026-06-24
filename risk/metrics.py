@@ -14,3 +14,13 @@ def compute_annualized_volatility(returns):
     #yearly_vol = returns.groupby(returns.index.year).std() * np.sqrt(252)
 
     return annual_volatility
+
+def compute_annualized_covariance(returns):
+    
+    if returns is None or returns.empty:
+        raise ValueError("No data for covariance")
+    
+    daily_cov_matrix = returns.cov()
+    annual_cov_matrix = daily_cov_matrix * 252
+
+    return annual_cov_matrix
