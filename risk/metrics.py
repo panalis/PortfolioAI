@@ -49,3 +49,13 @@ def compute_portfolio_return(weights, mean_returns):
     dot_product = np.dot(weights, mean_returns)
 
     return float(dot_product)
+
+def compute_annualized_mean_returns(returns):
+
+    if returns is None or returns.empty:
+        raise ValueError("Mean Returns Error")
+    
+    daily_mean = returns.mean()
+    annualized_mean_returns = daily_mean * 252
+
+    return annualized_mean_returns
