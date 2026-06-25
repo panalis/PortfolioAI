@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from data.preprocessing_data import get_user_portfolio, compute_log_returns
-from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility
+from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns
 
 ticker, price, weights = get_user_portfolio()      
 
