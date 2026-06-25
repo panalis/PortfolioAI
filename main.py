@@ -29,3 +29,7 @@ print('')
 # calculate annualized mean returns
 mean_returns = compute_annualized_mean_returns(log_returns) # dialy log returns
 print(f"Mean Returns:\n{mean_returns * 100}")
+
+# calculate portfolio returns
+portfolio_returns = compute_portfolio_return(weights, mean_returns) #annualized mean returns
+print(f"\nExpected Portfolio Return: {portfolio_returns * 100:.2f}%")
