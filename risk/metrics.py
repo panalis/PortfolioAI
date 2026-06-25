@@ -37,3 +37,15 @@ def compute_portfolio_volatility(weights, cov_matrix):
     portfolio_volatility = np.sqrt(variance)
 
     return portfolio_volatility
+
+def compute_portfolio_return(weights, mean_returns):
+    
+    if weights is None or len(weights) == 0:
+        raise ValueError("Weights Error Missing")
+    if mean_returns is None or mean_returns.empty:
+        raise ValueError("Mean Returns Error Missing")
+
+    weights = np.array(weights)
+    dot_product = np.dot(weights, mean_returns)
+
+    return float(dot_product)
