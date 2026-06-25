@@ -25,3 +25,7 @@ print('')
 portfolio_volatility = compute_portfolio_volatility(weights, annual_cov_matrix)
 print(f"Annual Portfolio Volatility: {portfolio_volatility * 100:.2f}%")
 print('')
+
+# calculate annualized mean returns
+mean_returns = compute_annualized_mean_returns(log_returns) # dialy log returns
+print(f"Mean Returns:\n{mean_returns * 100}")
