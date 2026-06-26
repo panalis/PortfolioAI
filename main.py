@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from data.preprocessing_data import get_user_portfolio, compute_log_returns
-from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns
+from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -33,3 +33,8 @@ print(f"Mean Returns:\n{mean_returns * 100}")
 # calculate portfolio returns
 portfolio_returns = compute_portfolio_return(weights, mean_returns) #annualized mean returns
 print(f"\nExpected Portfolio Return: {portfolio_returns * 100:.2f}%")
+
+#calculate Sharpe Ratio
+RISK_FREE_RATE = 0.02
+sharpe_ratio = compute_sharpe_ratio(portfolio_returns, portfolio_volatility, RISK_FREE_RATE)
+print("\n Portfolio Sharpe Ratio: ", sharpe_ratio)
