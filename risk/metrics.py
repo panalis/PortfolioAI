@@ -59,3 +59,16 @@ def compute_annualized_mean_returns(returns):
     annualized_mean_returns = daily_mean * 252
 
     return annualized_mean_returns
+
+def compute_sharpe_ratio(returns, volatility, risk_free_rate):
+    
+    if returns is None or np.isnan(returns):
+        raise ValueError("Sharpe Returns Error") 
+    if volatility is None or np.isnan(volatility): 
+        raise ValueError("Sharpe Volatility Error") 
+    if risk_free_rate is None or np.isnan(risk_free_rate): 
+        raise ValueError("Sharpe Risk Free Rate Error")
+    
+    sharpe_ratio = (returns - risk_free_rate) / volatility
+
+    return sharpe_ratio
