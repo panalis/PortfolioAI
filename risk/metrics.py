@@ -72,3 +72,15 @@ def compute_sharpe_ratio(returns, volatility, risk_free_rate):
     sharpe_ratio = (returns - risk_free_rate) / volatility
 
     return sharpe_ratio
+
+def compute_historical_var(returns, confidence_level):
+
+    if returns is None or returns.empty:
+        raise ValueError("Portfolio Returns for hVaR Error")
+    if confidence_level is None:
+        raise ValueError("hVaR Condidence Level Error")
+    
+    percentile = (1 - confidence_level) * 100
+    quantile_value = returns.quantile(percentile / 100)
+
+    return -quantile_value
