@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+from scipy.stats import norm
 
 def compute_annualized_volatility(returns):
 
@@ -84,3 +84,19 @@ def compute_historical_var(returns, confidence_level):
     quantile_value = returns.quantile(percentile / 100)
 
     return -quantile_value
+
+def compute_parametric_var(portfolio_returns, confidence_level):
+    
+    if portfolio_returns is None or portfolio_returns.empty:
+        raise ValueError("Portfolio Returns for pVaR Error")
+    if confidence_level is None:
+        raise ValueError("pVaR Condidence Level Error")
+    
+    mean = portfolio_returns.mean() # (μ)
+    std = portfolio_returns.std() #sigma (σ)
+
+    z = norm.ppf(1 - confidence_level)
+
+    var = -(mean + z * std)
+
+    return var
