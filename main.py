@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from data.preprocessing_data import get_user_portfolio, compute_log_returns
-from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio, compute_historical_var
+from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio, compute_historical_var, compute_parametric_var
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -50,6 +50,10 @@ portfolio_daily_returns = log_returns.dot(weights)
 # compute VaR
 hvar_95 = compute_historical_var(portfolio_daily_returns, 0.95)
 hvar_99 = compute_historical_var(portfolio_daily_returns, 0.99)
+pvar_95 = compute_parametric_var(portfolio_daily_returns, 0.95) 
+pvar_99 = compute_parametric_var(portfolio_daily_returns, 0.99)
 
 print(f"95% 1-Day Historical VaR: {hvar_95 * 100:.2f}%")
 print(f"99% 1-Day Historical VaR: {hvar_99 * 100:.2f}%")
+print(f"95% 1-Day Parametric VaR: {pvar_95 * 100:.2f}%") 
+print(f"99% 1-Day Parametric VaR: {pvar_99 * 100:.2f}%")
