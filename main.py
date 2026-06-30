@@ -3,6 +3,8 @@ import pandas as pd
 
 from data.preprocessing_data import get_user_portfolio, compute_log_returns
 from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio, compute_historical_var, compute_parametric_var
+from optimization.simulation import simulate_random_portfolios
+from reports.plots import plot_simulation
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -57,3 +59,17 @@ print(f"95% 1-Day Historical VaR: {hvar_95 * 100:.2f}%")
 print(f"99% 1-Day Historical VaR: {hvar_99 * 100:.2f}%")
 print(f"95% 1-Day Parametric VaR: {pvar_95 * 100:.2f}%") 
 print(f"99% 1-Day Parametric VaR: {pvar_99 * 100:.2f}%")
+
+# portfolio simulations w/ random weights
+print("\n--------------")
+print("Portfolio Simulation")
+print("--------------")
+
+runs = 10000
+simulation = simulate_random_portfolios(runs, mean_returns, annual_cov_matrix, RISK_FREE_RATE)
+print(simulation)
+best = simulation.loc[simulation["Sharpe Ratio"].idxmax()]
+worst = simulation.loc[simulation["Sharpe Ratio"].idxmin()]
+print("\n Best Simulation : \n", best)
+print("\n Worst Simulation : \n", worst)
+plot_simulation(simulation)
