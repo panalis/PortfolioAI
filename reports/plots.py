@@ -73,3 +73,32 @@ def plot_monte_carlo_var(simulated_returns, var, confidence=0.95):
     plt.grid(alpha=0.3)
     plt.tight_layout()
     plt.show()
+
+def plot_monte_carlo_paths(mean_returns, cov_matrix, weights, days, simulations):
+    daily_mean = mean_returns / 252
+    daily_cov = cov_matrix / 252
+
+    portfolio_paths = []
+
+    for _ in range(simulations):
+        # Simulate daily returns
+        simulated_returns = np.random.multivariate_normal(daily_mean, daily_cov, size=days)
+        portfolio_returns = simulated_returns @ weights
+
+        # Convert to cumulative value (starting at 100)
+        cumulative = 100 * np.cumprod(1 + portfolio_returns)
+        portfolio_paths.append(cumulative)
+
+    # Plot
+    plt.figure(figsize=(12, 6))
+    for path in portfolio_paths:
+        plt.plot(path, alpha=0.3)
+
+    plt.title("Monte Carlo Simulated Portfolio Paths")
+    plt.xlabel("Days")
+    plt.ylabel("Portfolio Value")
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+    return np.array(portfolio_paths)
