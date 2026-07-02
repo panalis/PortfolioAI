@@ -57,3 +57,19 @@ def plot_parametric_var(mean, std, var, confidence=0.95):
     plt.grid(alpha=0.3)
     plt.tight_layout()
     plt.show()
+
+def plot_monte_carlo_var(simulated_returns, var, confidence=0.95):
+    plt.figure(figsize=(10, 6))
+    plt.hist(simulated_returns, bins=50, alpha=0.75,
+             color="steelblue", edgecolor="black")
+
+    plt.axvline(var, color="red", linestyle="--",
+                label=f"{int(confidence*100)}% VaR: {var*100:.2f}%")
+
+    plt.title("Monte Carlo Simulated Return Distribution")
+    plt.xlabel("Simulated Returns")
+    plt.ylabel("Frequency")
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
