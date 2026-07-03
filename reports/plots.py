@@ -102,3 +102,21 @@ def plot_monte_carlo_paths(mean_returns, cov_matrix, weights, days, simulations)
     plt.show()
 
     return np.array(portfolio_paths)
+
+def plot_correlation_heatmap(returns, title="Correlation Heatmap", figsize=(10, 8)):
+    
+    corr = returns.corr()
+
+    plt.figure(figsize=figsize)
+    sns.heatmap(
+        corr,
+        annot=True,
+        cmap="coolwarm",
+        center=0,
+        square=True,
+        linewidths=0.5,
+        cbar_kws={"shrink": 0.8}
+    )
+    plt.title(title)
+    plt.tight_layout()
+    plt.show()
