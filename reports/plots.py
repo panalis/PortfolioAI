@@ -120,3 +120,26 @@ def plot_correlation_heatmap(returns, title="Correlation Heatmap", figsize=(10, 
     plt.title(title)
     plt.tight_layout()
     plt.show()
+
+def plot_efficient_frontier(portfolios, optimal_points=None, title="Efficient Frontier", figsize=(10, 7)): 
+
+    plt.figure(figsize=figsize) 
+    # Scatter of all random portfolios (converted to %) 
+    plt.scatter( portfolios["volatility"] * 100, portfolios["return"] * 100, 
+                c=portfolios["sharpe"], 
+                cmap="viridis", 
+                s=10, 
+                alpha=0.6 ) 
+    
+    # Highlight optimal points 
+    if optimal_points is not None: 
+        for label, (vol, ret) in optimal_points.items(): 
+            plt.scatter(vol * 100, ret * 100, color="red", s=80, marker="X", label=label) 
+            
+    plt.xlabel("Volatility (%)") 
+    plt.ylabel("Expected Return (%)") 
+    plt.title(title) 
+    plt.colorbar(label="Sharpe Ratio") 
+    plt.legend() 
+    plt.tight_layout() 
+    plt.show()
