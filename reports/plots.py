@@ -143,3 +143,16 @@ def plot_efficient_frontier(portfolios, optimal_points=None, title="Efficient Fr
     plt.legend() 
     plt.tight_layout() 
     plt.show()
+
+def plot_volatility_prediction(y_true, y_pred, title="Volatility Forecast"):
+    plt.figure(figsize=(12, 6))
+
+    plt.plot(y_true.index, y_true, label="Realized Volatility", linewidth=2)
+    plt.plot(y_pred.index, y_pred, label="Predicted Volatility", linestyle="--")
+
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("Volatility")
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.show()
