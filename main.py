@@ -92,3 +92,5 @@ std = portfolio_daily_returns.std()
 
 print(f"Daily Mean Return: {mean * 100:.4f}%")
 print(f"Daily Std Dev: {std * 100:.4f}%")
+
+plot_parametric_var(mean, std, -pvar_95, 0.95)
