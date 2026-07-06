@@ -5,7 +5,7 @@ from data.preprocessing_data import get_user_portfolio, compute_log_returns
 from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio, compute_historical_var, compute_parametric_var
 from risk.monte_carlo import compute_monte_carlo_var
 from optimization.simulation import simulate_random_portfolios
-from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths
+from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -106,3 +106,8 @@ mc_var_95, mc_sim_returns = compute_monte_carlo_var(
 
 plot_monte_carlo_var(mc_sim_returns, -mc_var_95, 0.95)
 
+print("\n--------------")
+print("Correlation Heatmap")
+print("--------------")
+
+plot_correlation_heatmap(log_returns)
