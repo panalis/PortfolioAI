@@ -94,3 +94,15 @@ print(f"Daily Mean Return: {mean * 100:.4f}%")
 print(f"Daily Std Dev: {std * 100:.4f}%")
 
 plot_parametric_var(mean, std, -pvar_95, 0.95)
+
+# portfolio_returns from your Monte Carlo function
+mc_var_95, mc_sim_returns = compute_monte_carlo_var(
+    mean_returns,
+    annual_cov_matrix,
+    weights,
+    0.95,
+    return_simulations=True
+)
+
+plot_monte_carlo_var(mc_sim_returns, -mc_var_95, 0.95)
+
