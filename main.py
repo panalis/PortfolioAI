@@ -111,3 +111,12 @@ print("Correlation Heatmap")
 print("--------------")
 
 plot_correlation_heatmap(log_returns)
+
+#MARKOQITZ
+print("\n--------------")
+print("Markowitz Optimization Test")
+print("--------------")
+
+target = float(mean_returns.mean())
+
+print(f"Using target return: {target:.4f}")
