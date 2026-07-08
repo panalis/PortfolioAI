@@ -6,6 +6,7 @@ from risk.metrics import compute_annualized_volatility, compute_annualized_covar
 from risk.monte_carlo import compute_monte_carlo_var
 from optimization.simulation import simulate_random_portfolios
 from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap
+from optimization.markowitz import minimize_volatility_for_target_return
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -120,3 +121,22 @@ print("--------------")
 target = float(mean_returns.mean())
 
 print(f"Using target return: {target:.4f}")
+
+if target < mean_returns.min() or target > mean_returns.max():
+    raise ValueError("Target return is outside the feasible range for long-only portfolios.")
+
+optimal_weights = minimize_volatility_for_target_return(
+    mean_returns,
+    annual_cov_matrix,
+    target
+)
+
+print("\nOptimal Weights for Target Return:")
+for ticker, w in zip(ticker, optimal_weights):
+    print(f"{ticker}: {w:.4f}")
+
+opt_vol = compute_portfolio_volatility(optimal_weights, annual_cov_matrix)
+opt_ret = compute_portfolio_return(optimal_weights, mean_returns)
+
+print(f"\nPortfolio Return: {opt_ret * 100:.2f}%")
+print(f"Portfolio Volatility: {opt_vol * 100:.2f}%")
