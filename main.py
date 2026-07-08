@@ -5,7 +5,7 @@ from data.preprocessing_data import get_user_portfolio, compute_log_returns
 from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio, compute_historical_var, compute_parametric_var
 from risk.monte_carlo import compute_monte_carlo_var
 from optimization.simulation import simulate_random_portfolios
-from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap
+from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap, plot_efficient_frontier
 from optimization.markowitz import minimize_volatility_for_target_return
 
 ticker, price, weights = get_user_portfolio()      
@@ -154,3 +154,25 @@ print(f"Min-Vol Portfolio Return: {opt_ret * 100:.2f}%")
 print(f"Min-Vol Portfolio Volatility: {opt_vol * 100:.2f}%") 
 print(f"Max-Sharpe Portfolio Return: {best['Return'] * 100:.2f}%") 
 print(f"Max-Sharpe Portfolio Volatility: {best['Volatility'] * 100:.2f}%")
+
+print("\n--------------")
+print("Efficient Frontier")
+print("--------------")
+
+# Convert your simulation output to the expected column names
+portfolios_df = simulation.rename(columns={
+    "Volatility": "volatility",
+    "Return": "return",
+    "Sharpe Ratio": "sharpe"
+})
+
+# Optimal points: Markowitz + best Sharpe from simulation
+optimal_points = {
+    "min_vol": (opt_vol, opt_ret),
+    "max_sharpe": (best["Volatility"], best["Return"])
+}
+
+plot_efficient_frontier(
+    portfolios_df,
+    optimal_points=optimal_points
+)
