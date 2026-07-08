@@ -140,3 +140,17 @@ opt_ret = compute_portfolio_return(optimal_weights, mean_returns)
 
 print(f"\nPortfolio Return: {opt_ret * 100:.2f}%")
 print(f"Portfolio Volatility: {opt_vol * 100:.2f}%")
+
+print("\n--------------")
+print("Monte Carlo Paths")
+print("--------------")
+
+paths = plot_monte_carlo_paths(mean_returns, annual_cov_matrix, weights, days=300, simulations=5000)
+final_values = paths[:, -1]          # last value of each path
+best_index = np.argmax(final_values) # index of best path
+best_path = paths[best_index]        # the actual path
+print("Best final value:", final_values[best_index])
+print(f"Min-Vol Portfolio Return: {opt_ret * 100:.2f}%") 
+print(f"Min-Vol Portfolio Volatility: {opt_vol * 100:.2f}%") 
+print(f"Max-Sharpe Portfolio Return: {best['Return'] * 100:.2f}%") 
+print(f"Max-Sharpe Portfolio Volatility: {best['Volatility'] * 100:.2f}%")
