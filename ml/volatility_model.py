@@ -35,3 +35,27 @@ def build_volatility_features(returns, window = 20):
     y = df['target']
 
     return X, y
+
+def train_volatility_model(X, y, model_type):
+
+    split = int(len(X) * 0.8) # 80/20 split
+
+    X_train, X_test = X[:split], X[split:]
+    y_train, y_test = y[:split], y[split:]
+
+    if model_type == "linear":
+        model = LinearRegression()
+    elif model_type == "rf":
+        model = RandomForestRegressor(
+            n_estimators=200,
+            max_depth=5,
+            random_state=42
+        )
+    else:
+        raise ValueError("Unknown model type")
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    
+
+    return model, X_test, y_test, y_pred
