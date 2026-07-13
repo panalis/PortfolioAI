@@ -35,3 +35,14 @@ def cluster_portfolios(data, k=3):
     interpretation[ordered_clusters[2]] = "Aggressive"
 
     return data, interpretation, scaler, kmeans
+
+def map_risk_tolerance_to_profile(risk_score):
+
+    if 1 <= risk_score <= 3:
+        return "Conservative"
+    elif 4 <= risk_score <= 7:
+        return "Balanced"
+    elif 8 <= risk_score <= 10:
+        return "Aggressive"
+    else:
+        raise ValueError("Risk tolerance must be between 1 and 10.")
