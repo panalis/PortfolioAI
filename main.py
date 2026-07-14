@@ -5,7 +5,7 @@ from data.preprocessing_data import get_user_portfolio, compute_log_returns
 from risk.metrics import compute_annualized_volatility, compute_annualized_covariance, compute_portfolio_volatility, compute_portfolio_return, compute_annualized_mean_returns, compute_sharpe_ratio, compute_historical_var, compute_parametric_var
 from risk.monte_carlo import compute_monte_carlo_var
 from optimization.simulation import simulate_random_portfolios
-from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap, plot_efficient_frontier
+from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap, plot_efficient_frontier, plot_volatility_prediction
 from optimization.markowitz import minimize_volatility_for_target_return
 from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model
 
@@ -211,3 +211,17 @@ for ticker in log_returns.columns:
     print(f"Random Forest:") 
     print(f" MAE: {mae_rf:.6f}") 
     print(f" MSE: {mse_rf:.6f}")
+
+    plot_volatility_prediction(
+        y_test,
+        pd.Series(y_pred_lin, index=y_test.index),
+        title=f"{ticker} — Linear Regression Volatility Forecast"
+        
+    )
+    
+    plot_volatility_prediction(
+        y_test,
+        pd.Series(y_pred_rf, index=y_test.index),
+        title=f"{ticker} — Random Forest Volatility Forecast"
+    )
+ 
