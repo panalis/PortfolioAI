@@ -46,3 +46,28 @@ def map_risk_tolerance_to_profile(risk_score):
         return "Aggressive"
     else:
         raise ValueError("Risk tolerance must be between 1 and 10.")
+    
+def select_portfolio(simulation_df, interpretation, risk_profile, method="sharpe"):
+
+    # Find which cluster corresponds to the user's profile
+    target_cluster = None
+    for cluster_id, profile in interpretation.items():
+        if profile == risk_profile:
+            target_cluster = cluster_id
+            break
+
+    if target_cluster is None:
+        raise ValueError("Risk profile not found in interpretation mapping.")
+
+    # Filter portfolios in that cluster
+    cluster_df = simulation_df[simulation_df["Cluster"] == target_cluster]
+
+    # Choose best portfolio
+    if method == "sharpe":
+        best = cluster_df.loc[cluster_df["Sharpe Ratio"].idxmax()]
+    elif method == "vol":
+        best = cluster_df.loc[cluster_df["Volatility"].idxmin()]
+    else:
+        raise ValueError("Method must be 'sharpe' or 'vol'.")
+
+    return best
