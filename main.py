@@ -7,6 +7,7 @@ from risk.monte_carlo import compute_monte_carlo_var
 from optimization.simulation import simulate_random_portfolios
 from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap, plot_efficient_frontier
 from optimization.markowitz import minimize_volatility_for_target_return
+from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model
 
 ticker, price, weights = get_user_portfolio()      
 
@@ -176,3 +177,37 @@ plot_efficient_frontier(
     portfolios_df,
     optimal_points=optimal_points
 )
+
+
+# volatility forecast
+for ticker in log_returns.columns:
+    X, y = build_volatility_features(log_returns[ticker])
+    print(f"\nFeatures for {ticker}:")
+    print(X.head())
+    print(y.head())
+
+print("\n==============================") 
+print(" VOLATILITY FORECASTING (ML) ") 
+print("==============================\n") 
+
+for ticker in log_returns.columns: 
+    print(f"\n----- {ticker} -----") 
+
+    # 1. Build features for this ticker 
+    X, y = build_volatility_features(log_returns[ticker])
+
+    # 2. Train Linear Regression 
+    model_lin, X_test, y_test, y_pred_lin = train_volatility_model( X, y, model_type="linear" ) 
+    mae_lin, mse_lin = evaluate_volatility_model(y_test, y_pred_lin) 
+
+    # # 3. Train Random Forest 
+    model_rf, X_test, y_test, y_pred_rf = train_volatility_model( X, y, model_type="rf" ) 
+    mae_rf, mse_rf = evaluate_volatility_model(y_test, y_pred_rf) 
+
+    # 4. Print results 
+    print(f"Linear Regression:") 
+    print(f" MAE: {mae_lin:.6f}") 
+    print(f" MSE: {mse_lin:.6f}") 
+    print(f"Random Forest:") 
+    print(f" MAE: {mae_rf:.6f}") 
+    print(f" MSE: {mse_rf:.6f}")
