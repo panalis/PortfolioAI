@@ -6,6 +6,12 @@ from sklearn.preprocessing import StandardScaler
 
 def cluster_portfolios(data, k=3):
 
+    if k != 3:
+        raise ValueError("cluster_portfolios supports k=3 only (Conservative / Balanced / Aggressive).")
+
+    # work on a copy so the caller's DataFrame is never mutated in place
+    data = data.copy()
+
     # inputs
     features = ["Return", "Volatility", "Sharpe Ratio", "VaR_95"]
     X = data[features].copy()

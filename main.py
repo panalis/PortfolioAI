@@ -9,6 +9,12 @@ from reports.plots import plot_simulation, plot_historical_var_distribution, plo
 from optimization.markowitz import minimize_volatility_for_target_return
 from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model
 from ml.clustering import cluster_portfolios, map_risk_tolerance_to_profile, select_portfolio
+
+# Reproducibility: seeds the global NumPy RNG used by every randomised routine
+# (random portfolio simulation, Monte Carlo VaR, Monte Carlo paths).
+RANDOM_SEED = 42
+np.random.seed(RANDOM_SEED)
+
 ticker, price, weights = get_user_portfolio()      
 
 # convert prices to log returns
@@ -81,13 +87,19 @@ print("\n--------------")
 print("Monte Carlo VaR")
 print("--------------")
 
-mc_var_95 = compute_monte_carlo_var(mean_returns, annual_cov_matrix, weights, 0.95)
+# single Monte Carlo draw reused for both the printed VaR and the plotted distribution
+mc_var_95, mc_sim_returns = compute_monte_carlo_var(
+    mean_returns,
+    annual_cov_matrix,
+    weights,
+    0.95,
+    return_simulations=True
+)
 mc_var_99 = compute_monte_carlo_var(mean_returns, annual_cov_matrix, weights, 0.99)
 
 print(f"95% 1-Day Monte Carlo VaR: {mc_var_95 * 100:.2f}%")
 print(f"99% 1-Day Monte Carlo VaR: {mc_var_99 * 100:.2f}%")
 
-simulations = hvar_95, hvar_99, pvar_95, pvar_99, mc_var_95, mc_var_99
 plot_historical_var_distribution(portfolio_daily_returns, -hvar_95, 0.95)
 mean = portfolio_daily_returns.mean()
 std = portfolio_daily_returns.std()
@@ -96,15 +108,6 @@ print(f"Daily Mean Return: {mean * 100:.4f}%")
 print(f"Daily Std Dev: {std * 100:.4f}%")
 
 plot_parametric_var(mean, std, -pvar_95, 0.95)
-
-# portfolio_returns from your Monte Carlo function
-mc_var_95, mc_sim_returns = compute_monte_carlo_var(
-    mean_returns,
-    annual_cov_matrix,
-    weights,
-    0.95,
-    return_simulations=True
-)
 
 plot_monte_carlo_var(mc_sim_returns, -mc_var_95, 0.95)
 
@@ -133,8 +136,8 @@ optimal_weights = minimize_volatility_for_target_return(
 )
 
 print("\nOptimal Weights for Target Return:")
-for ticker, w in zip(ticker, optimal_weights):
-    print(f"{ticker}: {w:.4f}")
+for t, w in zip(ticker, optimal_weights):
+    print(f"{t}: {w:.4f}")
 
 opt_vol = compute_portfolio_volatility(optimal_weights, annual_cov_matrix)
 opt_ret = compute_portfolio_return(optimal_weights, mean_returns)
@@ -179,22 +182,15 @@ plot_efficient_frontier(
 )
 
 
-# volatility forecast
-for ticker in log_returns.columns:
-    X, y = build_volatility_features(log_returns[ticker])
-    print(f"\nFeatures for {ticker}:")
-    print(X.head())
-    print(y.head())
-
-print("\n==============================") 
+print("\n-----------------------------") 
 print(" VOLATILITY FORECASTING (ML) ") 
-print("==============================\n") 
+print("-----------------------------\n") 
 
-for ticker in log_returns.columns: 
-    print(f"\n----- {ticker} -----") 
+for t in log_returns.columns: 
+    print(f"\n----- {t} -----") 
 
     # build features for this ticker 
-    X, y = build_volatility_features(log_returns[ticker])
+    X, y = build_volatility_features(log_returns[t])
 
     # train Linear Regression 
     model_lin, X_test, y_test, y_pred_lin = train_volatility_model( X, y, model_type="linear" ) 
@@ -215,19 +211,19 @@ for ticker in log_returns.columns:
     plot_volatility_prediction(
         y_test,
         pd.Series(y_pred_lin, index=y_test.index),
-        title=f"{ticker} — Linear Regression Volatility Forecast"
+        title=f"{t} — Linear Regression Volatility Forecast"
         
     )
     
     plot_volatility_prediction(
         y_test,
         pd.Series(y_pred_rf, index=y_test.index),
-        title=f"{ticker} — Random Forest Volatility Forecast"
+        title=f"{t} — Random Forest Volatility Forecast"
     )
  
-print("\n==============================") 
+print("\n--------------------------------") 
 print(" Portfolio Selection K-Means (ML)") 
-print("==============================\n") 
+print("--------------------------------\n") 
 
 #  clustering
 simulation_df, interpretation, scaler, kmeans = cluster_portfolios(simulation)
@@ -239,7 +235,7 @@ risk_score = int(input("Enter risk tolerance (1-10): "))
 risk_profile = map_risk_tolerance_to_profile(risk_score)
 
 # selection
-best_portfolio = select_portfolio(simulation, interpretation, risk_profile)
+best_portfolio = select_portfolio(simulation_df, interpretation, risk_profile)
 
 print("\nRecommended Portfolio Based on Your Risk Profile:")
 print(best_portfolio)
