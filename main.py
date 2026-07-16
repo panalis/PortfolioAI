@@ -8,7 +8,7 @@ from optimization.simulation import simulate_random_portfolios
 from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap, plot_efficient_frontier, plot_volatility_prediction
 from optimization.markowitz import minimize_volatility_for_target_return
 from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model
-
+from ml.clustering import cluster_portfolios, map_risk_tolerance_to_profile, select_portfolio
 ticker, price, weights = get_user_portfolio()      
 
 # convert prices to log returns
@@ -193,18 +193,18 @@ print("==============================\n")
 for ticker in log_returns.columns: 
     print(f"\n----- {ticker} -----") 
 
-    # 1. Build features for this ticker 
+    # build features for this ticker 
     X, y = build_volatility_features(log_returns[ticker])
 
-    # 2. Train Linear Regression 
+    # train Linear Regression 
     model_lin, X_test, y_test, y_pred_lin = train_volatility_model( X, y, model_type="linear" ) 
     mae_lin, mse_lin = evaluate_volatility_model(y_test, y_pred_lin) 
 
-    # # 3. Train Random Forest 
+    # train Random Forest 
     model_rf, X_test, y_test, y_pred_rf = train_volatility_model( X, y, model_type="rf" ) 
     mae_rf, mse_rf = evaluate_volatility_model(y_test, y_pred_rf) 
 
-    # 4. Print results 
+    # results 
     print(f"Linear Regression:") 
     print(f" MAE: {mae_lin:.6f}") 
     print(f" MSE: {mse_lin:.6f}") 
@@ -225,3 +225,21 @@ for ticker in log_returns.columns:
         title=f"{ticker} — Random Forest Volatility Forecast"
     )
  
+print("\n==============================") 
+print(" Portfolio Selection K-Means (ML)") 
+print("==============================\n") 
+
+#  clustering
+simulation_df, interpretation, scaler, kmeans = cluster_portfolios(simulation)
+
+# ask user
+print("\n 1-3 = Conservative - Low Risk \n 4-7 = Balanced - Medium Risk \n 8-10 = Aggressive - High Risk")
+
+risk_score = int(input("Enter risk tolerance (1-10): "))
+risk_profile = map_risk_tolerance_to_profile(risk_score)
+
+# selection
+best_portfolio = select_portfolio(simulation, interpretation, risk_profile)
+
+print("\nRecommended Portfolio Based on Your Risk Profile:")
+print(best_portfolio)
