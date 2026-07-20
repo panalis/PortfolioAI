@@ -66,3 +66,6 @@ def evaluate_volatility_model(y_true, y_pred):
     mse = mean_squared_error(y_true, y_pred)
 
     return mae, mse
+
+def persistence_baseline(X_test):
+    return X_test["vol_20"]
