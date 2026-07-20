@@ -7,7 +7,7 @@ from risk.monte_carlo import compute_monte_carlo_var
 from optimization.simulation import simulate_random_portfolios
 from reports.plots import plot_simulation, plot_historical_var_distribution, plot_parametric_var, plot_monte_carlo_var, plot_monte_carlo_paths, plot_correlation_heatmap, plot_efficient_frontier, plot_volatility_prediction
 from optimization.markowitz import minimize_volatility_for_target_return
-from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model
+from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model, persistence_baseline
 from ml.clustering import cluster_portfolios, map_risk_tolerance_to_profile, select_portfolio
 
 # Reproducibility: seeds the global NumPy RNG used by every randomised routine
@@ -200,12 +200,19 @@ for t in log_returns.columns:
     model_rf, X_test, y_test, y_pred_rf = train_volatility_model( X, y, model_type="rf" ) 
     mae_rf, mse_rf = evaluate_volatility_model(y_test, y_pred_rf) 
 
+    # persistence baseline: predict next-day vol = today's 20-day vol
+    y_pred_persist = persistence_baseline(X_test)
+    mae_persist, mse_persist = evaluate_volatility_model(y_test, y_pred_persist)
+
     # results 
+    print(f"Persistence baseline (no-change):") 
+    print(f" MAE: {mae_persist:.6f}") 
+    print(f" MSE: {mse_persist:.6f}") 
     print(f"Linear Regression:") 
-    print(f" MAE: {mae_lin:.6f}") 
+    print(f" MAE: {mae_lin:.6f}  ({'beats' if mae_lin < mae_persist else 'does NOT beat'} baseline)") 
     print(f" MSE: {mse_lin:.6f}") 
     print(f"Random Forest:") 
-    print(f" MAE: {mae_rf:.6f}") 
+    print(f" MAE: {mae_rf:.6f}  ({'beats' if mae_rf < mae_persist else 'does NOT beat'} baseline)") 
     print(f" MSE: {mse_rf:.6f}")
 
     plot_volatility_prediction(
