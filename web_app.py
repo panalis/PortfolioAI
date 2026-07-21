@@ -20,3 +20,13 @@ from optimization.markowitz import minimize_volatility_for_target_return
 from optimization.simulation import simulate_random_portfolios
 from ml.clustering import cluster_portfolios, map_risk_tolerance_to_profile, select_portfolio
 from ml.volatility_model import build_volatility_features, train_volatility_model, evaluate_volatility_model
+
+# ─────────────────────────────────────────────────────────────────
+# PAGE CONFIG
+# ─────────────────────────────────────────────────────────────────
+st.set_page_config(
+    page_title="PortfolioAI",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
