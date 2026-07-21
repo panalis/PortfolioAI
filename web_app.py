@@ -30,3 +30,20 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ─────────────────────────────────────────────────────────────────
+# UI HELPERS
+# ─────────────────────────────────────────────────────────────────
+def section(label: str, tag: str = ""):
+    tag_html = f'<span class="tag">{tag}</span>' if tag else ""
+    st.markdown(
+        f'<div class="pai-section">{tag_html}{label}</div>',
+        unsafe_allow_html=True,
+    )
+
+def note(html: str):
+    st.markdown(f'<div class="pai-note">{html}</div>', unsafe_allow_html=True)
+
+def risk_badge(profile: str):
+    cls = f"rb-{profile.lower()}"
+    st.markdown(f'<span class="rb {cls}">{profile}</span>', unsafe_allow_html=True)
